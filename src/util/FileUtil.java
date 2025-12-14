@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtil {
 
@@ -15,40 +17,20 @@ public class FileUtil {
     private static final Path PATH = Paths.get("src/data/movies.json");
 
 
-    private static Movie[] readFile(Path path) {
+    public static List<Movie> readFile() {
         try {
-            String json = Files.readString(path);
-            return GSON.fromJson(json, Movie[].class);
+            String json = Files.readString(PATH);
+            Movie[] movieArr = GSON.fromJson(json, Movie[].class);
+            List<Movie> movies = new ArrayList<Movie>();
+            for (Movie m : movieArr) {
+                movies.add(m);
+            }
+            return movies;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Movie[0];
+        return new ArrayList<>();
     }
 
-    private static void writeToFile(Path path, String json) {
-        byte[] strToBytes = json.getBytes();
-
-        try {
-            Files.write(path, strToBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public static Truck[] readTrucks() {
-//            return GSON.fromJson(readFile(TRUCKSPATH), Truck[].class);
-//    }
-//
-//    public static Driver[] readDrivers() {
-//        return GSON.fromJson(readFile(DRIVERSPATH), Driver[].class);
-//    }
-//
-//    public static void writeTrucks(Truck[] trucks) {
-//       writeToFile(TRUCKSPATH, GSON.toJson(trucks));
-//    }
-//
-//    public static void writeDrivers(Driver[] drivers) {
-//        writeToFile(DRIVERSPATH, GSON.toJson(drivers));
-//    }
 }
