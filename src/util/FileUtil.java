@@ -2,6 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import models.Movie;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,17 +12,18 @@ import java.nio.file.Paths;
 public class FileUtil {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path TRUCKSPATH = Paths.get("src/data/trucks.json");
-    private static final Path DRIVERSPATH = Paths.get("src/data/drivers.json");
+    private static final Path PATH = Paths.get("src/data/movies.json");
 
 
-    private static String readFile(Path path) {
+    private static Movie[] readFile(Path path) {
         try {
-            return Files.readString(path);
+            String json = Files.readString(path);
+            return GSON.fromJson(json, Movie[].class);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "";
+        return new Movie[0];
     }
 
     private static void writeToFile(Path path, String json) {
