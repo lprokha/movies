@@ -3,6 +3,7 @@ package util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.Movie;
+import models.MovieCatalog;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,12 +21,8 @@ public class FileUtil {
     public static List<Movie> readFile() {
         try {
             String json = Files.readString(PATH);
-            Movie[] movieArr = GSON.fromJson(json, Movie[].class);
-            List<Movie> movies = new ArrayList<Movie>();
-            for (Movie m : movieArr) {
-                movies.add(m);
-            }
-            return movies;
+            MovieCatalog catalog = GSON.fromJson(json, MovieCatalog.class);
+            return catalog.getMovies();
 
         } catch (IOException e) {
             e.printStackTrace();
