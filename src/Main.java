@@ -2,6 +2,7 @@ import models.Actor;
 import models.Movie;
 import util.FileUtil;
 
+import javax.crypto.spec.PSource;
 import java.util.*;
 
 public class Main {
@@ -20,20 +21,75 @@ public class Main {
     private static void run() {
         List<Movie> movies = FileUtil.readFile();
         printCollection(movies);
-        searchMovie(movies);
+//        searchMovie(movies);
+
+//        Map<String, List<Movie>> actors = createActorsMap(movies);
+//        printCollection(searchByName(actors));
+//
+//        Map<String, List<Movie>> directors = createDirectorsMap(movies);
+//        printCollection(searchByName(directors));
+
+        Map<Integer, List<Movie>> years = createYearsMap(movies);
+        printCollection(searchByYear(years));
 
 
-        System.out.println("Сортировка по году:");
-        sortCollection(movies, byYear);
-        sortReversedCollection(movies, byYear);
+//        System.out.println("Сортировка по году:");
+//        sortCollection(movies, byYear);
+//        sortReversedCollection(movies, byYear);
+//
+//        System.out.println("Сортировка по названию:");
+//        sortCollection(movies, byName);
+//        sortReversedCollection(movies, byName);
+//
+//        System.out.println("Сортировка по режиссеру:");
+//        sortCollection(movies, byDirector);
+//        sortReversedCollection(movies, byDirector);
+    }
 
-        System.out.println("Сортировка по названию:");
-        sortCollection(movies, byName);
-        sortReversedCollection(movies, byName);
+    private static List<Movie> searchByYear(Map<Integer, List<Movie>> map) {
+        List<Movie> searchResults = new ArrayList<Movie>();
+        int year = 0;
 
-        System.out.println("Сортировка по режиссеру:");
-        sortCollection(movies, byDirector);
-        sortReversedCollection(movies, byDirector);
+        System.out.print("Enter year to search: ");
+        while (true) {
+            try {
+                year = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Error: a year can only contain digits!");
+                sc.nextLine();
+                continue;
+            }
+
+            if (map.containsKey(year)) {
+                searchResults.addAll(map.get(year));
+                return searchResults;
+            } else {
+                System.out.println("No results found for \"" + year + "\". Try another year:");
+            }
+        }
+    }
+
+    private static List<Movie> searchByName(Map<String, List<Movie>> map) {
+        List<Movie> searchResults = new ArrayList<Movie>();
+        boolean notFound = true;
+
+        System.out.print("Enter name to search: ");
+        while (notFound) {
+            String search = sc.nextLine().strip().toLowerCase();
+
+            for (String name : map.keySet()) {
+                if (name.toLowerCase().contains(search)) {
+                    System.out.println("Name: " + name);
+                    searchResults.addAll(map.get(name));
+                    notFound = false;
+                }
+            }
+            if (notFound) {
+                System.out.println("No results found for \"" + search + "\". Try another name:");
+                continue;
+            }
+        }
+        return searchResults;
     }
 
     private static Map<String, List<Movie>> createActorsMap(List<Movie> movies) {
