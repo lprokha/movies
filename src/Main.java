@@ -1,10 +1,8 @@
+import models.Actor;
 import models.Movie;
 import util.FileUtil;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -36,6 +34,53 @@ public class Main {
         System.out.println("Сортировка по режиссеру:");
         sortCollection(movies, byDirector);
         sortReversedCollection(movies, byDirector);
+    }
+
+    private static Map<String, List<Movie>> createActorsMap(List<Movie> movies) {
+        Map<String, List<Movie>> actors = new HashMap<>();
+
+        for (Movie movie : movies) {
+            for (Actor actor : movie.getCast()) {
+                String name = actor.getFullName();
+
+                if (!actors.containsKey(name)) {
+                    actors.put(actor.getFullName(), new ArrayList<Movie>());
+                }
+
+                actors.get(name).add(movie);
+            }
+        }
+        return actors;
+    }
+
+    private static Map<String, List<Movie>> createDirectorsMap(List<Movie> movies) {
+        Map<String, List<Movie>> directors = new HashMap<>();
+
+        for (Movie movie : movies) {
+            String name = movie.getDirectorName();
+
+            if (!directors.containsKey(name)) {
+                directors.put(name, new ArrayList<Movie>());
+            }
+
+            directors.get(name).add(movie);
+        }
+        return directors;
+    }
+
+    private static Map<Integer, List<Movie>> createYearsMap(List<Movie> movies) {
+        Map<Integer, List<Movie>> years = new HashMap<>();
+
+        for (Movie movie : movies) {
+            int year = movie.getYear();
+
+            if (!years.containsKey(year)) {
+                years.put(year, new ArrayList<Movie>());
+            }
+
+            years.get(year).add(movie);
+        }
+        return years;
     }
 
     private static void sortCollection(List<Movie> movies, Comparator<Movie> cmp) {
