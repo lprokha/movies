@@ -7,4 +7,8 @@ public class Director {
     public String toString() {
         return "\n\t\tname: " + fullName;
     }
+
+    public String getFullName() {
+        return fullName;
+    }
 }

@@ -31,4 +31,12 @@ public class Movie {
     public String getName() {
         return name;
     }
+
+    public int getYear() {
+        return year;
+    }
+
+    public String getDirectorName() {
+        return director.getFullName();
+    }
 }
