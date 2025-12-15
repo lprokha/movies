@@ -2,7 +2,6 @@ import models.Actor;
 import models.Movie;
 import util.FileUtil;
 
-import javax.crypto.spec.PSource;
 import java.util.*;
 
 public class Main {
@@ -19,31 +18,199 @@ public class Main {
     }
 
     private static void run() {
-        List<Movie> movies = FileUtil.readFile();
-        printCollection(movies);
-//        searchMovie(movies);
+        menu();
+    }
 
-//        Map<String, List<Movie>> actors = createActorsMap(movies);
-//        printCollection(searchByName(actors));
-//
-//        Map<String, List<Movie>> directors = createDirectorsMap(movies);
-//        printCollection(searchByName(directors));
+    private static void menu() {
+        List<Movie> movies = new ArrayList<>();
+        Map<String, List<Movie>> actorsMap = new HashMap<>();
+        Map<String, List<Movie>> directorsMap = new HashMap<>();
+        Map<Integer, List<Movie>> yearsMap = new HashMap<>();
 
-        Map<Integer, List<Movie>> years = createYearsMap(movies);
-        printCollection(searchByYear(years));
+        List<Movie> currentList = new ArrayList<>();
+        boolean exit = false;
 
+        while (!exit) {
+            System.out.println(
+                    "\n\t======= MENU =======" +
+                            "\n\t1. Load movies from file" +
+                            "\n\t2. Show current list of movies" +
+                            "\n\t3. Search movie by name" +
+                            "\n\t4. Search movies by actor" +
+                            "\n\t5. Search movies by director" +
+                            "\n\t6. Search movies by year" +
+                            "\n\t7. Show all actors with roles" +
+                            "\n\t8. Sort current list" +
+                            "\n\t0. Exit"
+            );
 
-//        System.out.println("Сортировка по году:");
-//        sortCollection(movies, byYear);
-//        sortReversedCollection(movies, byYear);
-//
-//        System.out.println("Сортировка по названию:");
-//        sortCollection(movies, byName);
-//        sortReversedCollection(movies, byName);
-//
-//        System.out.println("Сортировка по режиссеру:");
-//        sortCollection(movies, byDirector);
-//        sortReversedCollection(movies, byDirector);
+            String choice;
+            while (true) {
+                System.out.print("Enter choice: ");
+                choice = sc.nextLine().strip();
+                if (choice.equals("0") || choice.equals("1") || choice.equals("2") || choice.equals("3") ||
+                        choice.equals("4") || choice.equals("5") || choice.equals("6") || choice.equals("7") || choice.equals("8")) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice! Please enter a number from 0 to 8.");
+                }
+            }
+
+            switch (choice) {
+                case "1":
+                    movies = FileUtil.readFile();
+                    actorsMap = createActorsMap(movies);
+                    directorsMap = createDirectorsMap(movies);
+                    yearsMap = createYearsMap(movies);
+                    currentList = new ArrayList<>(movies);
+                    System.out.println("Movies loaded successfully!");
+                    break;
+                case "2":
+                    if (!currentList.isEmpty()) {
+                        printCollection(currentList);
+                    } else {
+                        System.out.println("Current list is empty!");
+                    }
+                    break;
+                case "3":
+                    currentList = searchByName(createMapFromList(currentList));
+                    break;
+                case "4":
+                    currentList = searchActorWithRoles(currentList, createActorsMap(currentList));
+                    break;
+                case "5":
+                    currentList = searchByName(createDirectorsMap(currentList));
+                    break;
+                case "6":
+                    currentList = searchByYear(createYearsMap(currentList));
+                    break;
+                case "7":
+                    List<Map.Entry<String, List<String>>> allActors = getActorsListWithRoles(currentList);
+                    printActorsList(allActors);
+                    break;
+                case "8":
+                    sortCurrentListMenu(currentList);
+                    break;
+                case "0":
+                    System.out.println("Exiting...");
+                    exit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void sortCurrentListMenu(List<Movie> list) {
+        if (list.isEmpty()) {
+            System.out.println("Current list is empty! Nothing to sort.");
+        } else {
+            String choice;
+            while (true) {
+                System.out.println("Sort by: 1. Name  2. Year  3. Director");
+                choice = sc.nextLine().strip();
+                if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+                    break;
+                }
+                System.out.println("Invalid choice! Please enter 1, 2, or 3.");
+            }
+
+            Comparator<Movie> cmp;
+            switch (choice) {
+                case "1":
+                    cmp = byName;
+                    break;
+                case "2":
+                    cmp = byYear;
+                    break;
+                case "3":
+                    cmp = byDirector;
+                    break;
+                default:
+                    cmp = byName;
+            }
+
+            while (true) {
+                System.out.println("Order: 1. Ascending  2. Descending");
+                String order = sc.nextLine().strip();
+                if (order.equals("1")) {
+                    sortCollection(list, cmp);
+                    break;
+                } else if (order.equals("2")) {
+                    sortReversedCollection(list, cmp);
+                    break;
+                } else {
+                    System.out.println("Invalid order! Enter 1 or 2.");
+                }
+            }
+        }
+    }
+
+    private static Map<String, List<Movie>> createMapFromList(List<Movie> movies) {
+        Map<String, List<Movie>> map = new HashMap<>();
+        for (Movie m : movies) {
+            if (!map.containsKey(m.getName())) {
+                map.put(m.getName(), new ArrayList<>());
+            }
+            map.get(m.getName()).add(m);
+        }
+        return map;
+    }
+
+    private static void printActorsList(List<Map.Entry<String, List<String>>> actorList) {
+        for (Map.Entry<String, List<String>> entry : actorList) {
+            System.out.println("Actor: " + entry.getKey() + " | Roles: " + entry.getValue());
+        }
+    }
+
+    private static List<Map.Entry<String, List<String>>> getActorsListWithRoles(List<Movie> movies) {
+        Map<String, List<String>> actorMap = new HashMap<>();
+
+        for (Movie movie : movies) {
+            for (Actor actor : movie.getCast()) {
+                actorMap.putIfAbsent(actor.getFullName(), new ArrayList<>());
+                if (!actorMap.get(actor.getFullName()).contains(actor.getRole())) {
+                    actorMap.get(actor.getFullName()).add(actor.getRole());
+                }
+            }
+        }
+
+        List<Map.Entry<String, List<String>>> actorList = new ArrayList<>(actorMap.entrySet());
+        actorList.sort(Comparator.comparing(Map.Entry::getKey));
+
+        return actorList;
+    }
+
+    private static List<Movie> searchActorWithRoles(List<Movie> movies,Map<String, List<Movie>> actorMap) {
+        List<Movie> searchResults = new ArrayList<>();
+        boolean notFound = true;
+
+        System.out.print("Enter actor's name: ");
+        while (notFound) {
+            String search = sc.nextLine().strip().toLowerCase();
+
+            for (String actor : actorMap.keySet()) {
+                if (actor.toLowerCase().contains(search)) {
+                    System.out.println("Actor: " + actor);
+                    List<Movie> actorMovies = actorMap.get(actor);
+
+                    for (Movie movie : actorMovies) {
+                        for (Actor a : movie.getCast()) {
+                            if (a.getFullName().equalsIgnoreCase(actor)) {
+                                System.out.println("Movie: " + movie.getName() + " | Role: " + a.getRole());
+                                searchResults.add(movie);
+                                break;
+                            }
+                        }
+                    }
+
+                    notFound = false;
+//                    break;
+                }
+            }
+            if (notFound) {
+                System.out.println("No actor found for \"" + search + "\". Try another name:");
+            }
+        }
+        return searchResults;
     }
 
     private static List<Movie> searchByYear(Map<Integer, List<Movie>> map) {
