@@ -8,4 +8,12 @@ public class Actor {
     public String toString() {
         return "\n\t\tname: " + fullName + "\n\t\trole: " + role + "\n";
     }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

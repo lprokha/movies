@@ -39,4 +39,8 @@ public class Movie {
     public String getDirectorName() {
         return director.getFullName();
     }
+
+    public List<Actor> getCast() {
+        return cast;
+    }
 }
