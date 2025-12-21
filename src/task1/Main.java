@@ -7,10 +7,24 @@ public class Main {
         var cats = Cat.makeCats(10);
         Printer.print(cats);
 
-        // А сюда добавьте код, который будет сортировать коллекцию котов
-        // используйте лямбда-выражения и ссылки на методы
-        // cats.sort(?);
-        // Printer.print(cats);
+        /*********/
+
+        cats.sort(Cat::byBreed);
+        Printer.print(cats);
+
+        cats.sort(Cat::byNameAndAge);
+        Printer.print(cats);
+
+        final Cat.Color removableColor = Cat.Color.SILVER;
+
+        cats.removeIf(cat -> cat.getColor() == removableColor);
+        Printer.print(cats);
+
+        cats.removeIf(Cat::hasNameThisLong);
+        Printer.print(cats);
+
+
+        /*********/
     }
 
 }
