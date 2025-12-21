@@ -61,7 +61,7 @@ final class Cat {
     /*********/
 
     public static int byBreed(Cat cat1, Cat cat2) {
-        return (cat1.getBreed().compareTo(cat2.getBreed()));
+        return (cat1.getBreed().name().compareTo(cat2.getBreed().name()));
     }
 
     public static int byNameAndAge(Cat cat1, Cat cat2) {
