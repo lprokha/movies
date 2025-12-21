@@ -1,6 +1,8 @@
-import models.Actor;
-import models.Movie;
-import util.FileUtil;
+package task3;
+
+import task3.models.Actor;
+import task3.models.Movie;
+import task3.util.FileUtil;
 
 import java.util.*;
 
