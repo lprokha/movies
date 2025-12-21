@@ -60,8 +60,21 @@ final class Cat {
 
     /*********/
 
-    // Ваш код может находится здесь
-    // остальную часть этого файла вы менять не можете
+    public static int byBreed(Cat cat1, Cat cat2) {
+        return (cat1.getBreed().compareTo(cat2.getBreed()));
+    }
+
+    public static int byNameAndAge(Cat cat1, Cat cat2) {
+        int comparison = cat1.getName().compareTo(cat2.getName());
+        if (comparison == 0) {
+            return (Integer.compare(cat1.getAge(), cat2.getAge()));
+        }
+        return comparison;
+    }
+
+    public boolean hasNameThisLong() {
+        return name.length() == 5;
+    }
 
     /*********/
 }
