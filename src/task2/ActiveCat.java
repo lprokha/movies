@@ -1,6 +1,5 @@
 package task2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -17,9 +16,9 @@ public final class ActiveCat {
             "Millie", "Daisy", "Jasper", "Misty", "Minka");
     private final String name;
 
-    private Supplier<String> action;
+    private CatAction action;
 
-    public ActiveCat(Supplier<String> action) {
+    public ActiveCat(CatAction action) {
         name = names.get(r.nextInt(names.size()));
         this.action = action;
     }
