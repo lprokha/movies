@@ -23,9 +23,6 @@ public class Main {
 
     private static void menu() {
         List<Movie> movies = new ArrayList<>();
-        Map<String, List<Movie>> actorsMap = new HashMap<>();
-        Map<String, List<Movie>> directorsMap = new HashMap<>();
-        Map<Integer, List<Movie>> yearsMap = new HashMap<>();
 
         List<Movie> currentList = new ArrayList<>();
         boolean exit = false;
