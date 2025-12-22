@@ -21,11 +21,9 @@ public class Movie {
     }
 
     private String castToStr() {
-        String str = "";
-        for (Actor a : cast) {
-            str += "\t" + a.toString();
-        }
-        return str;
+        StringBuilder sb = new StringBuilder();
+        cast.forEach(a -> sb.append("\t").append(a).append("\n"));
+        return sb.toString();
     }
 
     public String getName() {
