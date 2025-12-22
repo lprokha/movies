@@ -159,9 +159,7 @@ public class Main {
     }
 
     private static void printActorsList(List<Map.Entry<String, List<String>>> actorList) {
-        for (Map.Entry<String, List<String>> entry : actorList) {
-            System.out.println("Actor: " + entry.getKey() + " | Roles: " + entry.getValue());
-        }
+        actorList.forEach(entry -> System.out.println("Actor: " + entry.getKey() + " | Roles: " + entry.getValue()));
     }
 
     private static List<Map.Entry<String, List<String>>> getActorsListWithRoles(List<Movie> movies) {
