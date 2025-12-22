@@ -1,6 +1,6 @@
 package task2;
 
 @FunctionalInterface
-interface CatAction {
+public interface CatAction {
     String perform();
 }

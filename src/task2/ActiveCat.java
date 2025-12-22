@@ -2,7 +2,6 @@ package task2;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Supplier;
 
 // код можно менять только в особо отмеченных местах этого файла.
 // то есть там, где написаны три знака вопроса "???"
