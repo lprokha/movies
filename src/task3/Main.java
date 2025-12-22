@@ -5,13 +5,11 @@ import task3.models.Movie;
 import task3.util.FileUtil;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class Main {
 
     private static Scanner sc = new Scanner(System.in);
-    private static Comparator<Movie> byYear = Comparator.comparingInt(Movie::getYear);
-    private static Comparator<Movie> byName = Comparator.comparing(Movie::getName);
-    private static Comparator<Movie> byDirector = Comparator.comparing(Movie::getDirectorName);
 
     public static void main(String[] args) {
 
@@ -119,29 +117,28 @@ public class Main {
                 System.out.println("Invalid choice! Please enter 1, 2, or 3.");
             }
 
-            Comparator<Movie> cmp;
+            Function<Movie, Comparable> comparableFunction;
             switch (choice) {
                 case "1":
-                    cmp = byName;
+                    comparableFunction = Movie::getName;
                     break;
                 case "2":
-                    cmp = byYear;
+                    comparableFunction = Movie::getYear;
                     break;
                 case "3":
-                    cmp = byDirector;
+                    comparableFunction = Movie::getDirectorName;
                     break;
                 default:
-                    cmp = byName;
+                    comparableFunction = Movie::getName;
             }
 
             while (true) {
                 System.out.println("Order: 1. Ascending  2. Descending");
                 String order = sc.nextLine().strip();
-                if (order.equals("1")) {
-                    sortCollection(list, cmp);
-                    break;
-                } else if (order.equals("2")) {
-                    sortReversedCollection(list, cmp);
+                boolean ascending = order.equals("1");
+
+                if (order.equals("1")||order.equals("2")) {
+                    sortCollection(list, comparableFunction, ascending);
                     break;
                 } else {
                     System.out.println("Invalid order! Enter 1 or 2.");
@@ -309,13 +306,13 @@ public class Main {
         return years;
     }
 
-    private static void sortCollection(List<Movie> movies, Comparator<Movie> cmp) {
-        movies.sort(cmp);
-        printCollection(movies);
-    }
+    private static void sortCollection(List<Movie> movies, Function<Movie, Comparable> comparableFunction, boolean ascending) {
+        Comparator<Movie> cmp = Comparator.comparing(comparableFunction);
+        if (!ascending) {
+            cmp = cmp.reversed();
+        }
 
-    private static void sortReversedCollection(List<Movie> movies, Comparator<Movie> cmp) {
-        movies.sort(cmp.reversed());
+        movies.sort(cmp);
         printCollection(movies);
     }
 
