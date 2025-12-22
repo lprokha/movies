@@ -37,12 +37,13 @@ public class Main {
                     "\n\t======= MENU =======" +
                             "\n\t1. Load movies from file" +
                             "\n\t2. Show current list of movies" +
-                            "\n\t3. Search movie by name" +
-                            "\n\t4. Search movies by actor" +
-                            "\n\t5. Search movies by director" +
-                            "\n\t6. Search movies by year" +
-                            "\n\t7. Show all actors with roles" +
-                            "\n\t8. Sort current list" +
+                            "\n\t3. Sort full list of movies" +
+                            "\n\t4. Search movie by name" +
+                            "\n\t5. Search movies by actor" +
+                            "\n\t6. Search movies by director" +
+                            "\n\t7. Search movies by year" +
+                            "\n\t8. Show all actors with roles" +
+                            "\n\t9. Sort current list" +
                             "\n\t0. Exit"
             );
 
@@ -51,19 +52,16 @@ public class Main {
                 System.out.print("Enter choice: ");
                 choice = sc.nextLine().strip();
                 if (choice.equals("0") || choice.equals("1") || choice.equals("2") || choice.equals("3") ||
-                        choice.equals("4") || choice.equals("5") || choice.equals("6") || choice.equals("7") || choice.equals("8")) {
+                        choice.equals("4") || choice.equals("5") || choice.equals("6") || choice.equals("7") || choice.equals("8") || choice.equals("9")) {
                     break;
                 } else {
-                    System.out.println("Invalid choice! Please enter a number from 0 to 8.");
+                    System.out.println("Invalid choice! Please enter a number from 0 to 9.");
                 }
             }
 
             switch (choice) {
                 case "1":
                     movies = FileUtil.readFile();
-                    actorsMap = createActorsMap(movies);
-                    directorsMap = createDirectorsMap(movies);
-                    yearsMap = createYearsMap(movies);
                     currentList = new ArrayList<>(movies);
                     System.out.println("Movies loaded successfully!");
                     break;
@@ -75,23 +73,29 @@ public class Main {
                     }
                     break;
                 case "3":
-                    currentList = searchByName(createMapFromList(currentList));
+                    sortListMenu(movies, "The");
                     break;
                 case "4":
-                    currentList = searchActorWithRoles(currentList, createActorsMap(currentList));
+                    currentList = searchByName(createMapFromList(movies));
+                    printCollection(currentList);
                     break;
                 case "5":
-                    currentList = searchByName(createDirectorsMap(currentList));
+                    currentList = searchActorWithRoles(movies, createActorsMap(currentList));
                     break;
                 case "6":
-                    currentList = searchByYear(createYearsMap(currentList));
+                    currentList = searchByName(createDirectorsMap(movies));
+                    printCollection(currentList);
                     break;
                 case "7":
-                    List<Map.Entry<String, List<String>>> allActors = getActorsListWithRoles(currentList);
-                    printActorsList(allActors);
+                    currentList = searchByYear(createYearsMap(movies));
+                    printCollection(currentList);
                     break;
                 case "8":
-                    sortCurrentListMenu(currentList);
+                    List<Map.Entry<String, List<String>>> allActors = getActorsListWithRoles(movies);
+                    printActorsList(allActors);
+                    break;
+                case "9":
+                    sortListMenu(currentList, "Current");
                     break;
                 case "0":
                     System.out.println("Exiting...");
@@ -101,9 +105,9 @@ public class Main {
         }
     }
 
-    private static void sortCurrentListMenu(List<Movie> list) {
+    private static void sortListMenu(List<Movie> list, String nameOfList) {
         if (list.isEmpty()) {
-            System.out.println("Current list is empty! Nothing to sort.");
+            System.out.printf("%n%s list is empty! Nothing to sort.%n", nameOfList);
         } else {
             String choice;
             while (true) {
@@ -205,7 +209,6 @@ public class Main {
                     }
 
                     notFound = false;
-//                    break;
                 }
             }
             if (notFound) {
@@ -223,9 +226,9 @@ public class Main {
         while (true) {
             try {
                 year = sc.nextInt();
+                sc.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("Error: a year can only contain digits!");
-                sc.nextLine();
                 continue;
             }
 
@@ -248,14 +251,12 @@ public class Main {
 
             for (String name : map.keySet()) {
                 if (name.toLowerCase().contains(search)) {
-                    System.out.println("Name: " + name);
                     searchResults.addAll(map.get(name));
                     notFound = false;
                 }
             }
             if (notFound) {
                 System.out.println("No results found for \"" + search + "\". Try another name:");
-                continue;
             }
         }
         return searchResults;
@@ -316,26 +317,6 @@ public class Main {
     private static void sortReversedCollection(List<Movie> movies, Comparator<Movie> cmp) {
         movies.sort(cmp.reversed());
         printCollection(movies);
-    }
-
-    private static void searchMovie(List<Movie> movies) {
-        List<Movie> searchResults = new ArrayList<Movie>();
-        boolean notFound = true;
-        System.out.print("Enter movie name: ");
-        while (notFound) {
-            String search = sc.nextLine().strip().toLowerCase();
-            for (Movie movie : movies) {
-                if (movie.getName().toLowerCase().contains(search)) {
-                    searchResults.add(movie);
-                    notFound = false;
-                }
-            }
-            if (notFound) {
-                System.out.println("Movie \"" + search + "\" not found. Try another name:");
-                continue;
-            }
-        }
-        printCollection(searchResults);
     }
 
     private static void printCollection(List<Movie> movies) {
