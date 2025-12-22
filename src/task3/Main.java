@@ -78,7 +78,7 @@ public class Main {
                     printCollection(currentList);
                     break;
                 case "5":
-                    currentList = searchActorWithRoles(movies, createActorsMap(currentList));
+                    currentList = searchActorWithRoles(movies, createActorsMap(movies));
                     break;
                 case "6":
                     currentList = searchByName(createDirectorsMap(movies));
@@ -90,6 +90,7 @@ public class Main {
                     break;
                 case "8":
                     List<Map.Entry<String, List<String>>> allActors = getActorsListWithRoles(movies);
+                    currentList = movies;
                     printActorsList(allActors);
                     break;
                 case "9":
